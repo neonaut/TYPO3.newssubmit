@@ -11,18 +11,18 @@
 	</f:link.action>
 
 	<table class="table">
-		<f:for each="{news}" as="{newsEntry}">
+		<f:for each="{news}" as="newsEntry">
 			<tr>
 				<td>
-					{news.crdate -> f:format.date()}
+					{newsEntry.crdate -> f:format.date()}
 				</td>
 				<td>
 					<f:link.action action="edit" arguments="{news:newsEntry}">
-						{news.title}
+						{newsEntry.title}
 					</f:link.action>
 				</td>
 				<td>
-					{news.author}
+					{newsEntry.author}
 				</td>
 			</tr>
 		</f:for>
