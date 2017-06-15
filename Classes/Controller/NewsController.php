@@ -135,9 +135,14 @@ class NewsController extends ActionController {
 		}
 
 		$this->view->assign('newNews', $newNews);
-		if (!empty($this->settings['categories']['enabled'])) {
+
+		if (!empty($this->settings['categories']['parentPid'])) {
+			$this->view->assign('categories',
+				$this->categoryRepository->findChildren((int)$this->settings['categories']['parentPid']));
+		} else {
 			$this->view->assign('categories', $this->categoryRepository->findAll());
 		}
+
 		$this->view->assign('feUser', $this->getFeUser());
 	}
 

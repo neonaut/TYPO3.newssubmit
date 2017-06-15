@@ -1,9 +1,19 @@
 plugin.tx_newssubmit {
 	view {
-		templateRootPath = {$plugin.tx_newssubmit.view.templateRootPath}
-		partialRootPath = {$plugin.tx_newssubmit.view.partialRootPath}
-		layoutRootPath = {$plugin.tx_newssubmit.view.layoutRootPath}
+		templateRootPaths {
+			0 = EXT:tx_newssubmit/Resources/Private/Templates/
+			1 = {$plugin.tx_newssubmit.view.templateRootPath}
+		}
+		partialRootPaths {
+			0 = EXT:tx_newssubmit/Resources/Private/Partials/
+			1 = {$plugin.tx_newssubmit.view.partialRootPath}
+		}
+		layoutRootPaths {
+			0 = EXT:tx_newssubmit/Resources/Private/Layouts/
+			1 = {$plugin.tx_newssubmit.view.layoutRootPath}
+		}
 	}
+
 	persistence {
 		storagePid = {$plugin.tx_newssubmit.persistence.storagePid}
 	}
@@ -11,6 +21,7 @@ plugin.tx_newssubmit {
 		enableNewItemsByDefault =
 		# enable categories posible values; empty = disabled, 1 = mulitple selection, single = single selection
 		categories.enabled = single
+        categories.parentPid =
 		keywords.enabled =
 		link.enabled =
 
