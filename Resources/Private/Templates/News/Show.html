@@ -1,0 +1,21 @@
+{namespace ns=T3ext\Newssubmit\ViewHelpers}
+
+<f:layout name="Default" />
+
+<f:section name="main">
+
+	<f:flashMessages />
+
+	<f:render partial="FormErrors" />
+
+	<f:form action="update" additionalParams="{redirectPid: '{settings.defaultListPid}'}" noCacheHash="TRUE" name="news" object="{newsEntry}" noCache="TRUE" additionalAttributes="{role: 'from'}" enctype="multipart/form-data">
+		<label>
+			<f:form.checkbox property="hidden" value="hidden" additionalAttributes="{onchange: 'this.form.submit()'}" />
+			Eintrag entfernen
+			<br />
+		</label>
+		<f:form.submit class="button-save" value="Save" />
+	</f:form>
+
+	<div style="clear:both" ></div>
+</f:section>

@@ -21,7 +21,8 @@ plugin.tx_newssubmit {
 		enableNewItemsByDefault =
 		# enable categories posible values; empty = disabled, 1 = mulitple selection, single = single selection
 		categories.enabled = single
-        categories.parentPid =
+		categories.parentPids =
+
 		keywords.enabled =
 		link.enabled =
 
@@ -54,4 +55,5 @@ plugin.tx_newssubmit._CSS_DEFAULT_STYLE (
 		background-color:#FF9F9F;
 		border: 1px #FF0000 solid;
 	}
+
 )

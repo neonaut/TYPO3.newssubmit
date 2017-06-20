@@ -19,7 +19,7 @@ if (!defined('TYPO3_MODE')) {
 	'T3ext.' . $_EXTKEY,
 	'NewsFeEdit',
 	array(
-		'News' => 'list, new, create, thankyou, edit, update',
+		'News' => 'show, list, new, create, thankyou, edit, update',
 	),
 	// non-cacheable actions
 	array(
