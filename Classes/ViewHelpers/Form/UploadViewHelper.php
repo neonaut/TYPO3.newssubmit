@@ -66,22 +66,19 @@ class UploadViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\UploadViewHelpe
 				$resourcePointerValue = 'file:' . $resource->getOriginalResource()->getOriginalFile()->getUid();
 			}
 			$output .= '<input type="hidden" name="' . $this->getName() . '[submittedFile][resourcePointer]" value="' . htmlspecialchars($this->hashService->appendHmac((string)$resourcePointerValue)) . '"' . $resourcePointerIdAttribute . ' />';
-		}
-
-		$output .= parent::render();
 
 		$this->templateVariableContainer->add('resource', $resource);
-		$this->templateVariableContainer->add('property', $this->arguments['property']);
 		$output .= $this->renderChildren();
 		$this->templateVariableContainer->remove('resource');
-		$this->templateVariableContainer->remove('property');
+        }
 
+        $output .= parent::render();
 		return $output;
 	}
 
 	/**
-	 * Returns a previously uploaded resource.
-	 * If errors occurred during property mapping for this property, NULL is returned
+     * Return a previously uploaded resource.
+     * Return NULL if errors occurred during property mapping for this property.
 	 *
 	 * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference
 	 */

@@ -31,10 +31,10 @@ use TYPO3\CMS\Core\Resource\File as FalFile;
 use TYPO3\CMS\Core\Resource\FileReference as FalFileReference;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
+use TYPO3\CMS\Extbase\Error\Error;
 use TYPO3\CMS\Extbase\Property\Exception\TypeConverterException;
 use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
-use TYPO3\CMS\Extbase\Error\Error;
-use TYPO3\Flow\Utility\Files;
+use TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter;
 
 /**
  * Class UploadedFileReferenceConverter
@@ -78,7 +78,7 @@ class UploadedFileReferenceConverter extends \TYPO3\CMS\Extbase\Property\TypeCon
 	 *
 	 * @var integer
 	 */
-	protected $priority = 3;
+    protected $priority = 30;
 
 	/**
 	 * @var \TYPO3\CMS\Core\Resource\ResourceFactory
