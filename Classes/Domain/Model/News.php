@@ -48,14 +48,11 @@ class News extends \GeorgRinger\News\Domain\Model\News {
 
 	/**
 	 * @var string
-	 * @validate NotEmpty
 	 */
 	protected $author;
 
 	/**
 	 * @var string
-	 * @validate NotEmpty
-	 * @validate EmailAddress
 	 */
 	protected $authorEmail;
 
