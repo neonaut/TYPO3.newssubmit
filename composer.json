@@ -6,10 +6,6 @@
 	"require": {
 		"typo3/cms-core": "^8.7"
 	},
-	"replace": {
-		"newssubmit": "self.version",
-		"typo3-ter/newssubmit": "self.version"
-	},
 	"autoload": {
 		"psr-4": {
 			"T3ext\\Newssubmit\\": "Classes/"
