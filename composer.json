@@ -3,9 +3,6 @@
 	"description": "Submit News and store them.",
 	"type": "typo3-cms-extension",
 	"version": "2.0.0",
-	"require": {
-		"typo3/cms-core": "^8.7"
-	},
 	"autoload": {
 		"psr-4": {
 			"T3ext\\Newssubmit\\": "Classes/"
@@ -16,7 +13,6 @@
 	"extra": {
 		"typo3/cms": {
 			"cms-package-dir": "{$vendor-dir}/typo3/cms",
-			"web-dir": ".Build/Web",
 			"extension-key": "newssubmit"
 		}
 	}
