@@ -32,43 +32,46 @@ use GeorgRinger\News\Domain\Model\FileReference;
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class News extends \GeorgRinger\News\Domain\Model\News {
+class News extends \GeorgRinger\News\Domain\Model\News
+{
 
-	/**
-	 * @var string
-	 * @validate NotEmpty
-	 */
-	protected $title;
+    /**
+     * @var string
+     * @validate NotEmpty
+     */
+    protected $title;
 
-	/**
-	 * @var string
-	 * @validate NotEmpty
-	 */
-	protected $bodytext;
+    /**
+     * @var string
+     * @validate NotEmpty
+     */
+    protected $bodytext;
 
-	/**
-	 * @var string
-	 */
-	protected $author;
+    /**
+     * @var string
+     * @validate NotEmpty
+     */
+    protected $author;
 
-	/**
-	 * @var string
-	 */
-	protected $authorEmail;
+    /**
+     * @var string
+     * @validate NotEmpty
+     */
+    protected $authorEmail;
 
-	/**
-	 * Add a Fal media file reference
-	 *
-	 * @param FileReference $falMedia
-	 */
-	public function addFalMedia(FileReference $falMedia)
-	{
-		if (!$falMedia) {
-			return;
-		}
-		if ($this->getFalMedia() === null) {
-			$this->falMedia = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		}
-		$this->falMedia->attach($falMedia);
-	}
+    /**
+     * Add a Fal media file reference
+     *
+     * @param FileReference $falMedia
+     */
+    public function addFalMedia(FileReference $falMedia)
+    {
+        if (!$falMedia) {
+            return;
+        }
+        if ($this->getFalMedia() === null) {
+            $this->falMedia = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        }
+        $this->falMedia->attach($falMedia);
+    }
 }
