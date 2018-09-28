@@ -36,8 +36,11 @@ use TYPO3\CMS\Core\Utility\MailUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Property\PropertyMappingConfiguration;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Core\Mail\MailMessage;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 
 /**
  *
@@ -48,6 +51,13 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 class NewsController extends ActionController
 {
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     *
+     */
+    protected $persistenceManager;
 
     /**
      * newsRepository
@@ -197,6 +207,8 @@ class NewsController extends ActionController
 
         // save news
         $this->newsRepository->add($newNews);
+        $this->persistenceManager->persistAll();
+
         $this->addFlashMessage(LocalizationUtility::translate('news.created', $this->extensionName));
 
         // send mail
@@ -217,7 +229,21 @@ class NewsController extends ActionController
         }
 
         // go to thank you action
-        $this->redirect('thankyou');
+        $this->redirect('thankyou', null, null, ['news' => $newNews]);
+    }
+
+    /**
+     * action thankyouAction
+     *
+     * @param News $news
+     *
+     * @return void
+     */
+    public function thankyouAction(News $news = null)
+    {
+        if ($news !== null) {
+            $this->view->assign('newsItem', $news);
+        }
     }
 
     /**
