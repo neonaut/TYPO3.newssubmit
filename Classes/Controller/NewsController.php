@@ -74,7 +74,7 @@ class NewsController extends ActionController
     /**
      * @var \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository
      */
-	protected $frontendUserRepository = NULL;
+    protected $frontendUserRepository = null;
 
     /**
      * Disable default Error FlashMessage
@@ -83,11 +83,12 @@ class NewsController extends ActionController
      */
     protected function getErrorFlashMessage()
     {
-		return FALSE;
+        return false;
     }
 
     /**
      * Set TypeConverter option for file upload
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      */
     public function initializeCreateAction()
     {
@@ -98,8 +99,8 @@ class NewsController extends ActionController
 
             $this->arguments->getArgument('newNews')
                 ->getPropertyMappingConfiguration()->forProperty('endtime')
-                ->setTypeConverterOption('TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter',
-                    \TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter::CONFIGURATION_DATE_FORMAT,
+                ->setTypeConverterOption(DateTimeConverter::class,
+                    DateTimeConverter::CONFIGURATION_DATE_FORMAT,
                     'd-m-Y');
 
             $this->setTypeConverterConfigurationForFileUpload('newNews');
@@ -126,7 +127,7 @@ class NewsController extends ActionController
             UploadedFileReferenceConverter::CONFIGURATION_UPLOAD_FOLDER => $this->settings['imagesFolder'],
         );
         $relatedFileUploadConfiguration = array(
-			UploadedFileReferenceConverter::CONFIGURATION_ALLOWED_FILE_EXTENSIONS => NULL,
+            UploadedFileReferenceConverter::CONFIGURATION_ALLOWED_FILE_EXTENSIONS => null,
             UploadedFileReferenceConverter::CONFIGURATION_UPLOAD_FOLDER => $this->settings['attachmentsFolder'],
         );
         /** @var PropertyMappingConfiguration $newsConfiguration */
@@ -134,14 +135,14 @@ class NewsController extends ActionController
         for ($i = 0; $i < (int)$this->settings['image']['count']; $i++) {
             $newsConfiguration->forProperty('falMedia.' . $i)
                 ->setTypeConverterOptions(
-                    'T3ext\\Newssubmit\\Property\\TypeConverter\\UploadedFileReferenceConverter',
+                    UploadedFileReferenceConverter::class,
                     $mediaUploadConfiguration
                 );
         }
         for ($i = 0; $i < (int)$this->settings['attachment']['count']; $i++) {
             $newsConfiguration->forProperty('falRelatedFiles.' . $i)
                 ->setTypeConverterOptions(
-                    'T3ext\\Newssubmit\\Property\\TypeConverter\\UploadedFileReferenceConverter',
+                    UploadedFileReferenceConverter::class,
                     $relatedFileUploadConfiguration
                 );
         }
@@ -152,22 +153,28 @@ class NewsController extends ActionController
      *
      * @param News $newNews
      * @dontvalidate $newNews
+     *
      * @return void
      */
-	public function newAction(News $newNews = NULL) {
+    public function newAction(News $newNews = null)
+    {
 
-		if ($newNews === NULL && $this->getFeUser()) {
+        if ($newNews === null && $this->getFeUser()) {
             $feUser = $this->getFeUser();
             $newNews = new News();
-            $newNews->setAuthor($feUser->getName());
-            $newNews->setAuthorEmail($feUser->getEmail());
+            if ($feUser !== null) {
+                $newNews->setAuthor($feUser->getName());
+            }
+            if ($feUser !== null) {
+                $newNews->setAuthorEmail($feUser->getEmail());
+            }
         }
 
         $this->view->assign('newNews', $newNews);
 
         if (!empty($this->settings['categories']['parentPids'])) {
 
-            $categorieList = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode(",", $this->settings['categories']['parentPids']);
+            $categorieList = GeneralUtility::intExplode(',', $this->settings['categories']['parentPids']);
 
             $categories = array();
             foreach ($categorieList as $item) {
@@ -187,7 +194,12 @@ class NewsController extends ActionController
      *
      * @param News   $newNews
      * @param string $link
+     *
      * @return void
+     * @throws \TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
     public function createAction(News $newNews, $link = '')
     {
@@ -214,7 +226,7 @@ class NewsController extends ActionController
         // send mail
         if ($this->settings['recipientMail']) {
             /** @var $message \TYPO3\CMS\Core\Mail\MailMessage */
-            $message = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Mail\\MailMessage');
+            $message = GeneralUtility::makeInstance(MailMessage::class);
             $from = MailUtility::getSystemFrom();
             $message->setFrom($from)
                 ->setTo(array($this->settings['recipientMail'] => 'News Manager'))
@@ -227,7 +239,6 @@ class NewsController extends ActionController
         if (!$newNews->getHidden()) {
             $this->flushNewsCache($newNews);
         }
-
         // go to thank you action
         $this->redirect('thankyou', null, null, ['news' => $newNews]);
     }
@@ -250,6 +261,8 @@ class NewsController extends ActionController
      * Flush cache (like in GeorgRinger\News\Hooks\DataHandler::clearCachePostProc())
      *
      * @param News $news
+     *
+     * @throws \TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException
      */
     protected function flushNewsCache(News $news)
     {
@@ -262,7 +275,7 @@ class NewsController extends ActionController
         }
 
         /** @var $cacheManager \TYPO3\CMS\Core\Cache\CacheManager */
-        $cacheManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
+        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
         foreach ($cacheTagsToFlush as $cacheTag) {
             $cacheManager->getCache('cache_pages')->flushByTag($cacheTag);
             $cacheManager->getCache('cache_pagesection')->flushByTag($cacheTag);
@@ -273,6 +286,7 @@ class NewsController extends ActionController
      * injectNewsRepository
      *
      * @param NewsRepository $newsRepository
+     *
      * @return void
      */
     public function injectNewsRepository(NewsRepository $newsRepository)
@@ -280,10 +294,16 @@ class NewsController extends ActionController
         $this->newsRepository = $newsRepository;
     }
 
+    public function injectPersistenceManager(\TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager)
+    {
+        $this->persistenceManager = $persistenceManager;
+    }
+
     /**
      * injectCategoriesRepository
      *
      * @param \GeorgRinger\News\Domain\Repository\CategoryRepository $categoryRepository
+     *
      * @return void
      */
     public function injectCategoryRepository(CategoryRepository $categoryRepository)
@@ -302,25 +322,15 @@ class NewsController extends ActionController
     }
 
     /**
-     * action list
-     *
-     * @param News $news
-     * @return void
-     */
-	public function thankyouAction(News $news = NULL) {
-
-    }
-
-    /**
      * Get current logged-in user
      *
-     * @return null|FrontendUser
+     * @return null|object|FrontendUser
      */
     public function getFeUser()
     {
         static $frontEndUser;
 
-		if ($frontEndUser === NULL && isset($GLOBALS['TSFE']) && $GLOBALS['TSFE']->loginUser && $GLOBALS['TSFE']->fe_user->user['uid']) {
+        if ($frontEndUser === null && isset($GLOBALS['TSFE']) && $GLOBALS['TSFE']->loginUser && $GLOBALS['TSFE']->fe_user->user['uid']) {
             $frontEndUser = $this->frontendUserRepository->findByUid($GLOBALS['TSFE']->fe_user->user['uid']);
         }
 
@@ -338,7 +348,7 @@ class NewsController extends ActionController
 
         if (!empty($this->settings['categories']['parentPids'])) {
 
-            $categorieList = GeneralUtility::intExplode(",", $this->settings['categories']['parentPids']);
+            $categorieList = GeneralUtility::intExplode(',', $this->settings['categories']['parentPids']);
 
             $categories = array();
             foreach ($categorieList as $item) {
@@ -357,8 +367,12 @@ class NewsController extends ActionController
      * Update news item
      *
      * @param News $news
+     *
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      */
     public function updateAction(News $news)
     {
@@ -369,7 +383,7 @@ class NewsController extends ActionController
             $this->flushNewsCache($news);
         }
 
-        $redirectPid = (int) GeneralUtility::_GP('redirectPid');
+        $redirectPid = (int)GeneralUtility::_GP('redirectPid');
 
         if ($redirectPid > 0) {
             $this->redirect(null, null, null, null, $redirectPid);
@@ -395,8 +409,8 @@ class NewsController extends ActionController
 
         // News of tx_news details page
         $gpNews = GeneralUtility::_GP('tx_news_pi1');
-        if (array_key_exists("news", $gpNews)) {
-            $newsId = (int)$gpNews[news];
+        if (array_key_exists('news', $gpNews)) {
+            $newsId = (int)$gpNews['news'];
             if ($newsId > 0) {
                 $myNews = $this->newsRepository->findByUid($newsId);
                 $this->view->assign('newsEntry', $myNews);
