@@ -70,7 +70,7 @@
 			<f:translate key="tx_newssubmit_domain_model_news.image" />
 		</label>
 		<ns:loop count="{settings.image.count}">
-			<ns:form.upload property="falMedia.{index}">
+			<ns:form.upload property="falMedia.{index}" id="news_image">
 				<f:if condition="{resource}">
 					<f:image image="{resource}" alt="" width="50"/>
 				</f:if>
