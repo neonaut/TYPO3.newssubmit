@@ -379,9 +379,7 @@ class NewsController extends ActionController
         $this->newsRepository->update($news);
 
         // clear page cache after save
-        if (!$news->getHidden()) {
             $this->flushNewsCache($news);
-        }
 
         $redirectPid = (int)GeneralUtility::_GP('redirectPid');
 
